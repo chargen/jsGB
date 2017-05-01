@@ -41,40 +41,40 @@ jsGB = {
     reset: function() {
         LOG.reset(); GPU.reset(); MMU.reset(); Z80.reset(); KEY.reset(); TIMER.reset();
         Z80._r.pc=0x100;MMU._inbios=0;Z80._r.sp=0xFFFE;Z80._r.hl=0x014D;Z80._r.c=0x13;Z80._r.e=0xD8;Z80._r.a=1;
-        MMU.load(document.getElementById('file').value);
+        MMU.load(document.getElementById('file').value, function () {
+            document.getElementById('op_reset').onclick=jsGB.reset;
+            document.getElementById('op_run').onclick=jsGB.run;
+            document.getElementById('op_run').innerHTML='Run';
+            document.getElementById('op_step').onclick=jsGB.step;
 
-        document.getElementById('op_reset').onclick=jsGB.reset;
-        document.getElementById('op_run').onclick=jsGB.run;
-        document.getElementById('op_run').innerHTML='Run';
-        document.getElementById('op_step').onclick=jsGB.step;
+            document.getElementById('tilepixels').innerHTML='';
+            var tp = document.createElement('div');
+            var x;
+            for(var i=0; i<64; i++)
+            {
+                document.getElementById('tilepixels').appendChild(tp);
+                tp = tp.cloneNode(false);
+            }
+            document.getElementById('tilenum').onupdate=jsGB.dbgtile();
+            document.getElementById('tileprev').onclick=function(){
+                var t=parseInt(document.getElementById('tilenum').value); t--; if(t<0) t=383;
+                document.getElementById('tilenum').value=t.toString();
+                jsGB.dbgtile();
+            };
+            document.getElementById('tilenext').onclick=function(){
+                var t=parseInt(document.getElementById('tilenum').value); t++; if(t>383) t=0;
+                document.getElementById('tilenum').value=t.toString();
+                jsGB.dbgtile();
+            };
 
-        document.getElementById('tilepixels').innerHTML='';
-        var tp = document.createElement('div');
-        var x;
-        for(var i=0; i<64; i++)
-        {
-            document.getElementById('tilepixels').appendChild(tp);
-            tp = tp.cloneNode(false);
-        }
-        document.getElementById('tilenum').onupdate=jsGB.dbgtile();
-        document.getElementById('tileprev').onclick=function(){
-            var t=parseInt(document.getElementById('tilenum').value); t--; if(t<0) t=383;
-            document.getElementById('tilenum').value=t.toString();
+            jsGB.dbgupdate();
             jsGB.dbgtile();
-        };
-        document.getElementById('tilenext').onclick=function(){
-            var t=parseInt(document.getElementById('tilenum').value); t++; if(t>383) t=0;
-            document.getElementById('tilenum').value=t.toString();
-            jsGB.dbgtile();
-        };
+            jsGB.trace = '';
+            tabMagic.init();
+            jsGB.pause();
 
-        jsGB.dbgupdate();
-        jsGB.dbgtile();
-        jsGB.trace = '';
-        tabMagic.init();
-        jsGB.pause();
-
-        LOG.out('MAIN', 'Reset.');
+            LOG.out('MAIN', 'Reset.');
+        });
     },
 
     run: function() {

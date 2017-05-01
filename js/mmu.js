@@ -17,7 +17,7 @@ MMU = {
     0x21, 0x04, 0x01, 0x11, 0xA8, 0x00, 0x1A, 0x13, 0xBE, 0x20, 0xFE, 0x23, 0x7D, 0xFE, 0x34, 0x20,
     0xF5, 0x06, 0x19, 0x78, 0x86, 0x23, 0x05, 0x20, 0xFB, 0x86, 0x20, 0xFE, 0x3E, 0x01, 0xE0, 0x50
   ],
-  _rom: '',
+  _rom: null,
   _carttype: 0,
   _mbc: [
     {},
@@ -52,12 +52,24 @@ MMU = {
     LOG.out('MMU', 'Reset.');
   },
 
-  load: function(file) {
-    b=new BinFileReader(file);
-    MMU._rom=b.readString(b.getFileSize(), 0);
-    MMU._carttype = MMU._rom.charCodeAt(0x0147);
+  load: function(file, callback) {
+      var rom = null;
 
-    LOG.out('MMU', 'ROM loaded, '+MMU._rom.length+' bytes.');
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', file, true);
+      xhr.overrideMimeType('text/plain; charset=x-user-defined')
+      xhr.responseType = 'arraybuffer';
+
+      xhr.onload = function(e) {
+          rom = new Uint8Array(this.response);
+          MMU._rom = rom;
+          MMU._carttype = MMU._rom[0x0147];
+          LOG.out('MMU', 'ROM loaded, '+MMU._rom.length+' bytes.');
+
+          callback();
+      };
+
+      xhr.send();
   },
 
   rb: function(addr) {
@@ -76,17 +88,17 @@ MMU = {
 	}
 	else
 	{
-	  return MMU._rom.charCodeAt(addr);
+	  return MMU._rom[addr];
 	}
 
       case 0x1000:
       case 0x2000:
       case 0x3000:
-        return MMU._rom.charCodeAt(addr);
+        return MMU._rom[addr];
 
       // ROM bank 1
       case 0x4000: case 0x5000: case 0x6000: case 0x7000:
-        return MMU._rom.charCodeAt(MMU._romoffs+(addr&0x3FFF));
+        return MMU._rom[MMU._romoffs + (addr&0x3FFF)];
 
       // VRAM
       case 0x8000: case 0x9000:
