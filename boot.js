@@ -81,7 +81,7 @@ var jsGB = {
 
     run: function() {
         Z80._stop = 0;
-        jsGB.run_interval = setInterval(jsGB.frame,1);
+        jsGB.run_interval = setInterval(jsGB.frame,20);
         document.getElementById('op_run').innerHTML = 'Pause';
         document.getElementById('op_run').onclick = jsGB.pause;
     },
