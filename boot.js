@@ -36,8 +36,6 @@ jsGB = {
             }
         } while(Z80._clock.m < fclock);
 
-        var t1 = new Date();
-        document.getElementById('fps').innerHTML=Math.round(10000/(t1-t0))/10;
     },
 
     reset: function() {
@@ -84,6 +82,18 @@ jsGB = {
         jsGB.run_interval = setInterval(jsGB.frame,1);
         document.getElementById('op_run').innerHTML = 'Pause';
         document.getElementById('op_run').onclick = jsGB.pause;
+    },
+
+    runBenchmark: function (nbFrames) {
+        Z80._stop = 0;
+
+        var time = Date.now();
+
+        for (var i = 0; i < nbFrames; i++) {
+            jsGB.frame();
+        }
+
+        console.log('Rendered ' +  nbFrames + ' frames in ' + (Date.now() - time) + ' ms');
     },
 
     pause: function() {
@@ -187,9 +197,18 @@ jsGB = {
             jsGB.pause();
         }
         jsGB.dbgupdate();
+    },
+
+    initialize: function (benchmark) {
+        if (benchmark) {
+            window.onload = function () {
+                jsGB.reset();
+                setTimeout(function () { jsGB.runBenchmark(2000); }, 250);
+            };
+        } else {
+            window.onload = jsGB.reset;
+            window.onkeydown = KEY.keydown;
+            window.onkeyup = KEY.keyup;
+        }
     }
 };
-
-window.onload = jsGB.reset;
-window.onkeydown = KEY.keydown;
-window.onkeyup = KEY.keyup;
