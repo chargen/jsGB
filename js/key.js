@@ -1,9 +1,11 @@
-KEY = {
+"use strict";
+
+var KEY = {
   _keys: [0x0F,0x0F],
   _colidx: 0,
 
   reset: function() {
-    KEY._keys = [0x0F,0x0F];
+    KEY._keys[0] = KEY._keys[1] = 0x0F;
     KEY._colidx = 0;
     LOG.out('KEY', 'Reset.');
   },

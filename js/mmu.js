@@ -1,4 +1,6 @@
-MMU = {
+"use strict";
+
+var MMU = {
     _bios: new Uint8Array([
         0x31, 0xFE, 0xFF, 0xAF, 0x21, 0xFF, 0x9F, 0x32, 0xCB, 0x7C, 0x20, 0xFB, 0x21, 0x26, 0xFF, 0x0E,
         0x11, 0x3E, 0x80, 0x32, 0xE2, 0x0C, 0x3E, 0xF3, 0xE2, 0x32, 0x3E, 0x77, 0x77, 0x3E, 0xFC, 0xE0,
@@ -40,6 +42,8 @@ MMU = {
     _if: 0,
 
     reset: function () {
+        var i = 0;
+
         for (i = 0; i < 32768; i++) {
             MMU._eram[i] = 0;
         }
@@ -91,7 +95,7 @@ MMU = {
                 if (MMU._inbios) {
                     if (addr < 0x0100) {
                         return MMU._bios[addr];
-                    } else if (Z80._r.pc == 0x0100) {
+                    } else if (Z80._r.pc === 0x0100) {
                         MMU._inbios = 0;
                         LOG.out('MMU', 'Leaving BIOS.');
                     }
@@ -154,7 +158,7 @@ MMU = {
 
                     // Zeropage RAM, I/O, interrupts
                     case 0xF00:
-                        if (addr == 0xFFFF) {
+                        if (addr === 0xFFFF) {
                             return MMU._ie;
                         }
                         else if (addr > 0xFF7F) {
@@ -205,7 +209,7 @@ MMU = {
             case 0x1000:
                 switch (MMU._carttype) {
                     case 1:
-                        MMU._mbc[1].ramon = ((val & 0xF) == 0xA) ? 1 : 0;
+                        MMU._mbc[1].ramon = ((val & 0xF) === 0xA) ? 1 : 0;
                         break;
                 }
                 break;
@@ -304,7 +308,7 @@ MMU = {
 
                     // Zeropage RAM, I/O, interrupts
                     case 0xF00:
-                        if (addr == 0xFFFF) {
+                        if (addr === 0xFFFF) {
                             MMU._ie = val;
                         }
                         else if (addr > 0xFF7F) {

@@ -1,4 +1,6 @@
-jsGB = {
+"use strict";
+
+var jsGB = {
     run_interval: 0,
     trace: '',
 
@@ -109,11 +111,13 @@ jsGB = {
 
     dbgupdate: function() {
         var t = document.getElementById('reg').getElementsByTagName('td');
-        var x,j,k;
+        var x,j,k,p;
         for(var i=0; i<t.length; i++)
         {
             if(t[i].className=='reg')
             {
+                //TODO check what are those evals
+
                 switch(t[i].getAttribute('rel'))
                 {
                     case 'a': case 'b': case 'c': case 'd': case 'e':

@@ -1,4 +1,6 @@
-GPU = {
+"use strict";
+
+var GPU = {
   _vram: [],
   _oam: [],
   _reg: [],
@@ -17,7 +19,7 @@ GPU = {
   _xscrl: 0,
   _raster: 0,
   _ints: 0,
-  
+
   _lcdon: 0,
   _bgon: 0,
   _objon: 0,
@@ -30,7 +32,11 @@ GPU = {
   _wintilebase: 0x1800,
 
   reset: function() {
-    for(var i=0; i<8192; i++) {
+    var i = 0,
+        j = 0,
+        k = 0;
+
+    for(i=0; i<8192; i++) {
       GPU._vram[i] = 0;
     }
     for(i=0; i<160; i++) {
@@ -349,6 +355,9 @@ GPU = {
 
   wb: function(addr,val) {
     var gaddr = addr-0xFF40;
+    var i = 0;
+    var v;
+
     GPU._reg[gaddr] = val;
     switch(gaddr)
     {
@@ -374,8 +383,7 @@ GPU = {
 
       // OAM DMA
       case 6:
-        var v;
-        for(var i=0; i<160; i++)
+        for(i=0; i<160; i++)
         {
           v = MMU.rb((val<<8)+i);
           GPU._oam[i] = v;
@@ -385,7 +393,7 @@ GPU = {
 
       // BG palette mapping
       case 7:
-        for(var i=0;i<4;i++)
+        for(i=0;i<4;i++)
         {
           switch((val>>(i*2))&3)
           {
@@ -399,7 +407,7 @@ GPU = {
 
       // OBJ0 palette mapping
       case 8:
-        for(var i=0;i<4;i++)
+        for(i=0;i<4;i++)
         {
           switch((val>>(i*2))&3)
           {
@@ -413,7 +421,7 @@ GPU = {
 
       // OBJ1 palette mapping
       case 9:
-        for(var i=0;i<4;i++)
+        for(i=0;i<4;i++)
         {
           switch((val>>(i*2))&3)
           {

@@ -1,4 +1,6 @@
-TIMER = {
+"use strict";
+
+var TIMER = {
   _div: 0,
   _tma: 0,
   _tima: 0,

@@ -1,13 +1,14 @@
-LOG = {
+"use strict";
+
+var LOG = {
   _start: 0,
 
   reset: function() {
-    d=new Date(); LOG._start=d.getTime();
+    this._start=Date.now();
   },
 
   out: function(module, str) {
-    t=new Date(); ts=t.getTime()-LOG._start;
-    //console.log('{'+ts+'ms} ['+module+'] '+str);
-    document.getElementById('msg').innerHTML += ('{'+ts+'ms} ['+module+'] '+str+'<br>');
+    var ts = Date.now() - this._start;
+    document.getElementById('msg').innerHTML += ('{' + ts + 'ms} [' + module + '] ' + str + '<br>');
   }
 };
